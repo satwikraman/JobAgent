@@ -14,13 +14,13 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich import print as rprint
 
-from .resume_parser import ResumeParser
-from .job_searcher import JobSearcher
-from .form_filler import FormFiller
-from .models import Resume, Job, Application, ApplicationStatus
-from .config import Config
-from .database import Database
-from .claude_client import ClaudeClient
+from resume_parser import ResumeParser
+from job_searcher import JobSearcher
+from form_filler import FormFiller
+from models import Resume, Job, Application, ApplicationStatus
+from config import Config
+from database import Database
+from claude_client import ClaudeClient
 
 console = Console()
 
@@ -58,6 +58,14 @@ class JobAgent:
     ):
         """Search for jobs matching the resume and display results."""
         resume = self._load_resume(resume_path)
+        
+        # If no role specified, extract suitable roles from resume
+        if not role:
+            role = self._extract_suitable_roles(resume)
+            if not role:
+                console.print("[red]❌ Could not extract suitable roles from resume.[/red]")
+                return
+        
         jobs = self._find_matching_jobs(resume, role, location, limit, min_score)
         self._display_jobs_table(jobs)
         console.print(f"\n[green]✓ Found {len(jobs)} matching jobs.[/green]")
@@ -105,6 +113,14 @@ class JobAgent:
             time.sleep(3)
 
         resume = self._load_resume(resume_path)
+        
+        # If no role specified, extract suitable roles from resume
+        if not role:
+            role = self._extract_suitable_roles(resume)
+            if not role:
+                console.print("[red]❌ Could not extract suitable roles from resume.[/red]")
+                return
+        
         jobs = self._find_matching_jobs(resume, role, location, limit * 3, min_score)
 
         if not jobs:
@@ -241,6 +257,41 @@ Return only valid JSON, no markdown.
 
         self.db.save_application(app)
         return app.status in (ApplicationStatus.APPLIED, ApplicationStatus.DRY_RUN)
+
+    def _extract_suitable_roles(self, resume: Resume) -> str:
+        """Extract suitable job roles from resume using Claude."""
+        console.print("\n[bold]🎯 Analyzing resume to identify suitable roles...[/bold]")
+        
+        # Prepare experience and skills for Claude
+        experience_titles = [exp.get("title", "Unknown") for exp in resume.experience]
+        skills_list = ", ".join(resume.skills[:15]) if resume.skills else "Not specified"
+        
+        prompt = f"""
+Based on this professional background, suggest the TOP 3 job titles/roles that would be a good fit.
+
+Experience titles: {', '.join(experience_titles)}
+Top skills: {skills_list}
+Professional summary: {resume.summary}
+
+Return ONLY a JSON array with exactly 3 role suggestions as strings, e.g. ["Software Engineer", "Full Stack Developer", "Backend Engineer"].
+Order by best fit first. Be specific and job-title appropriate.
+
+Return only the JSON array, no explanation.
+"""
+        try:
+            result = self.claude.complete(prompt, max_tokens=200)
+            roles = json.loads(result)
+            
+            if isinstance(roles, list) and len(roles) > 0:
+                selected_role = roles[0]
+                console.print(f"[green]✓ Suggested roles:[/green] {', '.join(roles)}")
+                console.print(f"[cyan]  → Searching for: {selected_role}[/cyan]")
+                return selected_role
+            else:
+                return None
+        except Exception as e:
+            console.print(f"[yellow]⚠  Could not auto-detect roles: {e}[/yellow]")
+            return None
 
     def _display_jobs_table(self, jobs: list[Job]):
         """Print a rich table of job results."""

@@ -4,8 +4,8 @@ Resume Parser - Extracts structured data from PDF and DOCX resumes using Claude 
 
 import json
 from pathlib import Path
-from .models import Resume
-from .claude_client import ClaudeClient
+from models import Resume
+from claude_client import ClaudeClient
 
 
 class ResumeParser:

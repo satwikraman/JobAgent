@@ -6,8 +6,8 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus, urljoin
 from typing import Optional
-from .models import Job
-from .config import Config
+from models import Job
+from config import Config
 
 
 class JobSearcher:

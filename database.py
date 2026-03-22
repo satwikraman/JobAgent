@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
-from .models import Application, ApplicationStatus, Job, Resume
+from models import Application, ApplicationStatus, Job, Resume
 
 
 class Database:

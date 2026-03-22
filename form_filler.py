@@ -9,9 +9,9 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
 
-from .models import Application, ApplicationResult
-from .claude_client import ClaudeClient
-from .config import Config
+from models import Application, ApplicationResult
+from claude_client import ClaudeClient
+from config import Config
 
 
 @dataclass

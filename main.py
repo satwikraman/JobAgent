@@ -7,8 +7,8 @@ Run: python main.py --help
 import argparse
 import sys
 from pathlib import Path
-from agent.agent import JobAgent
-from agent.dashboard import launch_dashboard
+from agent import JobAgent
+from dashboard import launch_dashboard
 
 def main():
     parser = argparse.ArgumentParser(
@@ -28,7 +28,7 @@ Examples:
     # --- search command ---
     search_parser = subparsers.add_parser("search", help="Search for matching jobs")
     search_parser.add_argument("--resume", required=True, help="Path to your resume (PDF or DOCX)")
-    search_parser.add_argument("--role", required=True, help="Job title/role to search for")
+    search_parser.add_argument("--role", default=None, help="Job title/role to search for (optional; if not provided, will auto-detect from resume)")
     search_parser.add_argument("--location", default="Remote", help="Job location (default: Remote)")
     search_parser.add_argument("--limit", type=int, default=20, help="Max jobs to find (default: 20)")
     search_parser.add_argument("--min-score", type=int, default=70, help="Min match score 0-100 (default: 70)")
@@ -42,7 +42,7 @@ Examples:
     # --- auto command ---
     auto_parser = subparsers.add_parser("auto", help="Automatically search AND apply to matching jobs")
     auto_parser.add_argument("--resume", required=True, help="Path to your resume (PDF or DOCX)")
-    auto_parser.add_argument("--role", required=True, help="Job title/role to search for")
+    auto_parser.add_argument("--role", default=None, help="Job title/role to search for (optional; if not provided, will auto-detect from resume)")
     auto_parser.add_argument("--location", default="Remote", help="Job location (default: Remote)")
     auto_parser.add_argument("--limit", type=int, default=5, help="Max applications to submit (default: 5)")
     auto_parser.add_argument("--min-score", type=int, default=80, help="Min match score to auto-apply (default: 80)")
@@ -62,7 +62,7 @@ Examples:
         sys.exit(1)
 
     if args.command == "setup":
-        from agent.setup_wizard import run_setup
+        from setup_wizard import run_setup
         run_setup()
 
     elif args.command == "dashboard":

@@ -51,6 +51,21 @@ export ANTHROPIC_API_KEY=sk-ant-...
 
 ### 3. Search for jobs
 
+**Option A: Auto-detect suitable roles from your resume**
+
+```bash
+# Activate virtual environment (if not already activated)
+source .venv/bin/activate
+
+python main.py search \
+  --resume resume.pdf \
+  --location "Chicago, IL"
+```
+
+The agent will analyze your resume and suggest 3 suitable job roles, then search for jobs matching the top suggestion.
+
+**Option B: Specify a role explicitly**
+
 ```bash
 # Activate virtual environment (if not already activated)
 source .venv/bin/activate
@@ -63,6 +78,18 @@ python main.py search \
 
 ### 4. Dry run (preview without submitting)
 
+**Option A: Auto-detect roles from resume**
+
+```bash
+python main.py auto \
+  --resume resume.pdf \
+  --location "Remote" \
+  --limit 3 \
+  --dry-run
+```
+
+**Option B: Specify a role**
+
 ```bash
 python main.py auto \
   --resume resume.pdf \
@@ -73,6 +100,18 @@ python main.py auto \
 ```
 
 ### 5. Auto-apply
+
+**Option A: Auto-detect roles from resume**
+
+```bash
+python main.py auto \
+  --resume resume.pdf \
+  --location "Chicago, IL" \
+  --limit 10 \
+  --min-score 80
+```
+
+**Option B: Specify a role**
 
 ```bash
 python main.py auto \
@@ -159,6 +198,7 @@ Your Resume (PDF/DOCX)
 
 ## Tips
 
+- **Auto-detect job roles** — Omit `--role` and the agent will analyze your resume to suggest suitable positions
 - **Always activate the virtual environment** first: `source .venv/bin/activate`
 - **Start with `--dry-run`** to see what the agent would do before submitting real applications
 - **Set `headless: false`** to watch the browser and debug any issues
