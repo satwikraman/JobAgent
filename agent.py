@@ -166,6 +166,14 @@ class JobAgent:
             progress.add_task("Parsing resume...", total=None)
             resume = self.resume_parser.parse(path)
 
+        if not resume.name:
+            console.print("[yellow]⚠  Could not extract name from resume. Using file name.[/yellow]")
+            resume.name = path.stem
+        
+        if not resume.skills and not resume.experience:
+            console.print("[yellow]⚠  Warning: Could not extract skills or experience from resume.[/yellow]")
+            console.print("[yellow]   This may reduce job matching accuracy. Consider updating config.yaml with your Anthropic API key.[/yellow]")
+
         console.print(f"[green]✓ Resume loaded:[/green] {resume.name} | {len(resume.skills)} skills | {len(resume.experience)} roles")
         return resume
 
@@ -188,14 +196,65 @@ class JobAgent:
         return scored_jobs[:limit]
 
     def _score_and_filter_jobs(self, resume: Resume, jobs: list[Job], min_score: int) -> list[Job]:
-        """Use Claude to score each job against the resume."""
+        """Use Claude to score each job against the resume, with fallback to simple scoring."""
+        if not jobs:
+            return []
+        
         scored = []
-        for job in jobs:
-            job.match_score = self._score_job(resume, job)
-            if job.match_score >= min_score:
+        api_failed = False
+        adjusted_min_score = min_score
+        
+        for i, job in enumerate(jobs):
+            try:
+                job.match_score = self._score_job(resume, job)
+            except Exception as e:
+                # If Claude API fails, use simple keyword matching
+                if not api_failed:
+                    console.print(f"[yellow]⚠  AI scoring unavailable: {str(e)[:50]}...[/yellow]")
+                    console.print("[yellow]   Using keyword-based scoring instead.[/yellow]")
+                    api_failed = True
+                    # Lower the minimum score requirement since simple scoring is less nuanced
+                    adjusted_min_score = max(40, min_score - 20)
+                    if adjusted_min_score < min_score:
+                        console.print(f"[yellow]   Adjusted min-score: {min_score} → {adjusted_min_score}[/yellow]")
+                
+                job.match_score = self._simple_score_job(resume, job)
+            
+            if job.match_score >= adjusted_min_score:
                 scored.append(job)
+        
+        # If no jobs meet the score threshold and we're using simple scoring, 
+        # show jobs with score >= 40 anyway
+        if not scored and api_failed and jobs:
+            scored = [j for j in jobs if j.match_score >= 40]
+            if scored:
+                console.print(f"[green]✓ Showing {len(scored)} jobs with relaxed score threshold[/green]")
+        
         scored.sort(key=lambda j: j.match_score, reverse=True)
         return scored
+
+    def _simple_score_job(self, resume: Resume, job: Job) -> int:
+        """Simple keyword-based scoring when Claude API is unavailable."""
+        score = 50  # Base score
+        
+        if not resume.skills:
+            return score
+        
+        # Combine job title, description, and other fields
+        job_text = f"{job.title} {job.company}".lower()
+        resume_text = " ".join(resume.skills).lower()
+        
+        # Check for skill matches
+        matches = 0
+        for skill in resume.skills[:10]:  # Check top 10 skills
+            if skill.lower() in job_text:
+                matches += 1
+        
+        # Score: 50 base + 5 per skill match (max 95)
+        score = min(50 + (matches * 5), 95)
+        job.match_reasons = [f"Found {matches} skill match(es)", "Keyword-based scoring"]
+        
+        return score
 
     def _score_job(self, resume: Resume, job: Job) -> int:
         """Ask Claude to score how well resume matches the job (0-100)."""

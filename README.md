@@ -210,11 +210,15 @@ Your Resume (PDF/DOCX)
 
 ## Limitations & Notes
 
-- **Indeed scraping** works best for jobs with an "Apply Now" redirect to employer sites. Indeed's own "Easy Apply" flow requires additional handling.
-- **Multi-step forms** (Workday, Greenhouse, Lever) are supported but complex flows may require manual completion.
-- **CAPTCHA** — If you encounter CAPTCHAs, set `headless: false` and solve them manually. Consider adding delays.
+- **Indeed scraping** — Indeed actively blocks automated requests. If you get `403 Forbidden` errors:
+  - Try using a broad location like "India" or "Remote" instead of specific cities
+  - Indeed may require additional delays. You can increase `slow_mo_ms` in `config.yaml` to add inter-request delays
+  - Be a good citizen: use reasonable delays (15+ seconds between requests) to avoid getting your IP blocked permanently
+  - Best jobs with an "Apply Now" redirect to employer sites work well. Indeed's own "Easy Apply" flow requires additional handling.
+- **Multi-step forms** — Workday, Greenhouse, Lever and other ATS platforms are supported but complex flows may require manual completion.
+- **CAPTCHA** — If you encounter CAPTCHAs, set `headless: false` in config.yaml and solve them manually. Consider adding delays.
 - **Rate limits** — Don't set `apply_delay_seconds` below 15; some sites will block you.
-- **LinkedIn** — Full support requires LinkedIn account credentials or a paid RapidAPI key. See `agent/job_searcher.py` for the stub.
+- **LinkedIn** — Full support requires LinkedIn account credentials or a paid RapidAPI key. See `job_searcher.py` for the stub.
 
 ---
 
