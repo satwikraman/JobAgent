@@ -4,6 +4,19 @@ An AI-powered local agent that reads your resume, searches for matching jobs, au
 
 ---
 
+## 📄 Resume
+
+👉 **[View & Download Resume](./RESUME.md)** — Hosted on GitHub
+
+Your resume is now publicly accessible at:
+```
+https://raw.githubusercontent.com/satwikramantarlana/JobAgent/main/resume.pdf
+```
+
+Use this link in job applications, LinkedIn, and portfolio sites.
+
+---
+
 ## Features
 
 - **Resume parsing** — Extracts structured data from PDF, DOCX, or TXT resumes using Claude
