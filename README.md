@@ -22,6 +22,13 @@ An AI-powered local agent that reads your resume, searches for matching jobs, au
 ### 1. Install dependencies
 
 ```bash
+# Create virtual environment (first time only)
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 playwright install chromium
 ```
@@ -29,6 +36,9 @@ playwright install chromium
 ### 2. Run the setup wizard
 
 ```bash
+# Activate virtual environment (if not already activated)
+source .venv/bin/activate
+
 python main.py setup
 ```
 
@@ -42,6 +52,9 @@ export ANTHROPIC_API_KEY=sk-ant-...
 ### 3. Search for jobs
 
 ```bash
+# Activate virtual environment (if not already activated)
+source .venv/bin/activate
+
 python main.py search \
   --resume resume.pdf \
   --role "Software Engineer" \
@@ -81,6 +94,9 @@ python main.py apply \
 ### 7. Launch the dashboard
 
 ```bash
+# Activate virtual environment (if not already activated)
+source .venv/bin/activate
+
 python main.py dashboard
 # Opens http://localhost:8501
 ```
@@ -143,6 +159,7 @@ Your Resume (PDF/DOCX)
 
 ## Tips
 
+- **Always activate the virtual environment** first: `source .venv/bin/activate`
 - **Start with `--dry-run`** to see what the agent would do before submitting real applications
 - **Set `headless: false`** to watch the browser and debug any issues
 - **Increase `slow_mo_ms`** (e.g. 200) if sites are detecting automation
