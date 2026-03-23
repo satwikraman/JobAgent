@@ -21,7 +21,7 @@ class GeminiClient:
         if system:
             prompt = f"{system}\n\n{prompt}"
 
-        url = f"{self.base_url}/models/gemini-pro:generateContent?key={self.api_key}"
+        url = f"{self.base_url}/models/gemini-1.5-flash:generateContent?key={self.api_key}"
         headers = {"Content-Type": "application/json"}
         data = {
             "contents": [{
@@ -39,6 +39,13 @@ class GeminiClient:
             response.raise_for_status()
             result = response.json()
             return result["candidates"][0]["content"]["parts"][0]["text"]
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 404:
+                print(f"Gemini API error: Model or endpoint not found. Please ensure you have a valid Gemini API key from Google AI Studio.")
+                print(f"Get your key at: https://aistudio.google.com/app/apikey")
+            else:
+                print(f"Gemini API error: {e}")
+            return ""
         except Exception as e:
             print(f"Gemini API error: {e}")
             return ""

@@ -57,6 +57,8 @@ python main.py setup
 
 This creates `config.yaml` with your profile and API key.
 
+**Important:** When prompted for the Gemini API key, make sure to use a key from [Google AI Studio](https://aistudio.google.com/app/apikey), not a general Google API key.
+
 Alternatively, copy `config.yaml` and fill in your details manually, or set:
 ```bash
 export GOOGLE_API_KEY=your_google_api_key_here
