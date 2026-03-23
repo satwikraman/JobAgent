@@ -41,7 +41,10 @@ class GeminiClient:
             return result["candidates"][0]["content"]["parts"][0]["text"]
         except requests.exceptions.HTTPError as e:
             if response.status_code == 404:
-                print(f"Gemini API error: Model or endpoint not found. Please ensure you have a valid Gemini API key from Google AI Studio.")
+                print(f"Gemini API error: Model or endpoint not found. Your API key appears to be a general Google API key (starts with 'AIzaSy'), but Gemini requires a specific API key from Google AI Studio.")
+                print(f"Get your key at: https://aistudio.google.com/app/apikey")
+            elif response.status_code == 403:
+                print(f"Gemini API error: Access forbidden. Please check that your API key is valid and has the necessary permissions.")
                 print(f"Get your key at: https://aistudio.google.com/app/apikey")
             else:
                 print(f"Gemini API error: {e}")
