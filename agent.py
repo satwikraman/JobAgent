@@ -34,13 +34,13 @@ class JobAgent:
         self.config = Config(config_path)
         self.db = Database()
         self.gemini = GeminiClient(api_key=self.config.get("google_api_key"))
-        self.resume_parser = ResumeParser(self.claude)
+        self.resume_parser = ResumeParser(self.gemini)
         self.job_searcher = JobSearcher(self.config)
-        self.form_filler = FormFiller(self.config, self.claude)
+        self.form_filler = FormFiller(self.config, self.gemini)
 
         console.print(Panel.fit(
             "[bold cyan]🤖 Job Application Agent[/bold cyan]\n"
-            "[dim]Powered by Claude AI[/dim]",
+            "[dim]Powered by Gemini AI[/dim]",
             border_style="cyan"
         ))
 
@@ -172,7 +172,7 @@ class JobAgent:
         
         if not resume.skills and not resume.experience:
             console.print("[yellow]⚠  Warning: Could not extract skills or experience from resume.[/yellow]")
-            console.print("[yellow]   This may reduce job matching accuracy. Consider updating config.yaml with your Anthropic API key.[/yellow]")
+            console.print("[yellow]   This may reduce job matching accuracy. Consider updating config.yaml with your Gemini API key.[/yellow]")
 
         console.print(f"[green]✓ Resume loaded:[/green] {resume.name} | {len(resume.skills)} skills | {len(resume.experience)} roles")
         return resume

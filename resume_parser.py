@@ -15,7 +15,7 @@ class ResumeParser:
     """
 
     def __init__(self, gemini: GeminiClient):
-        self.claude = claude
+        self.gemini = gemini
 
     def parse(self, path: Path) -> Resume:
         """Main entry point — detects file type and parses accordingly."""

@@ -34,7 +34,7 @@ class FormFiller:
 
     def __init__(self, config: Config, gemini: GeminiClient):
         self.config = config
-        self.claude = claude
+        self.gemini = gemini
         self._screenshots_dir = Path("screenshots")
         self._screenshots_dir.mkdir(exist_ok=True)
 

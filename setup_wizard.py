@@ -21,10 +21,10 @@ def run_setup():
     config = {}
 
     # ── API Key ──────────────────────────────────────────────────────────────
-    console.print("\n[bold]Step 1: Anthropic API Key[/bold]")
-    console.print("[dim]Get your key at https://console.anthropic.com[/dim]")
-    api_key = Prompt.ask("Anthropic API key", password=True)
-    config["anthropic_api_key"] = api_key
+    console.print("\n[bold]Step 1: Gemini API Key[/bold]")
+    console.print("[dim]Get your key at https://aistudio.google.com/app/apikey[/dim]")
+    api_key = Prompt.ask("Gemini API key", password=True)
+    config["google_api_key"] = api_key
 
     # ── Personal Profile ─────────────────────────────────────────────────────
     console.print("\n[bold]Step 2: Personal Details[/bold]")
