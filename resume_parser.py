@@ -5,7 +5,7 @@ Resume Parser - Extracts structured data from PDF and DOCX resumes using Claude 
 import json
 from pathlib import Path
 from models import Resume
-from claude_client import ClaudeClient
+from gemini_client import GeminiClient
 
 
 class ResumeParser:
@@ -14,7 +14,7 @@ class ResumeParser:
     using Claude for intelligent extraction.
     """
 
-    def __init__(self, claude: ClaudeClient):
+    def __init__(self, gemini: GeminiClient):
         self.claude = claude
 
     def parse(self, path: Path) -> Resume:
@@ -80,7 +80,7 @@ RESUME TEXT:
 
 Return only valid JSON, no markdown fences, no explanation.
 """
-        data = self.claude.extract_json(prompt, max_tokens=2000)
+        data = self.gemini.extract_json(prompt, max_tokens=2000)
 
         resume = Resume(
             name=data.get("name", ""),

@@ -20,7 +20,7 @@ from form_filler import FormFiller
 from models import Resume, Job, Application, ApplicationStatus
 from config import Config
 from database import Database
-from claude_client import ClaudeClient
+from gemini_client import GeminiClient
 
 console = Console()
 
@@ -33,7 +33,7 @@ class JobAgent:
     def __init__(self, config_path: str = "config.yaml"):
         self.config = Config(config_path)
         self.db = Database()
-        self.claude = ClaudeClient(api_key=self.config.get("anthropic_api_key"))
+        self.gemini = GeminiClient(api_key=self.config.get("google_api_key"))
         self.resume_parser = ResumeParser(self.claude)
         self.job_searcher = JobSearcher(self.config)
         self.form_filler = FormFiller(self.config, self.claude)
@@ -278,7 +278,7 @@ Description (first 800 chars): {job.description[:800]}
 
 Return only valid JSON, no markdown.
 """
-            result = self.claude.complete(prompt, max_tokens=200)
+            result = self.gemini.complete(prompt, max_tokens=200)
             data = json.loads(result)
             job.match_reasons = data.get("reasons", [])
             return int(data.get("score", 50))
@@ -338,7 +338,7 @@ Order by best fit first. Be specific and job-title appropriate.
 Return only the JSON array, no explanation.
 """
         try:
-            result = self.claude.complete(prompt, max_tokens=200)
+            result = self.gemini.complete(prompt, max_tokens=200)
             roles = json.loads(result)
             
             if isinstance(roles, list) and len(roles) > 0:

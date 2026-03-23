@@ -9,8 +9,8 @@ Your Job Agent is not finding jobs because of **3 cascading issues**:
 - This is intentional - Indeed doesn't allow bots to scrape their job listings
 - **Workaround**: The agent now uses Playwright (browser automation) as a fallback, but this requires JavaScript rendering
 
-### 2. **Claude API Insufficient Credits**
-- Resume parsing needs Claude API to extract structured data
+### 2. **Gemini API Insufficient Credits**
+- Resume parsing needs Gemini API to extract structured data
 - Your account has insufficient credits for API calls
 - **Result**: Resume has 0 skills → all jobs score low during filtering
 
@@ -30,17 +30,18 @@ Instead of relying on resume parsing, provide explicit job roles:
 ```bash
 source .venv/bin/activate
 
-# This works without needing Claude API or perfect resume parsing
+# This works without needing Gemini API or perfect resume parsing
 python main.py search --resume resume.pdf --role "Software Engineer" --location "Remote"
 ```
 
-The `--role` parameter is **required for job search to work reliably**. Auto-detection requires Claude API credits.
+The `--role` parameter is **required for job search to work reliably**. Auto-detection requires Gemini API credits.
 
-### ✅ Medium Term: Add Claude Credits
+### ✅ Medium Term: Add Gemini Credits
 
 To enable full AI features:
 
-1. Go to [https://console.anthropic.com/account/billing/overview](https://console.anthropic.com/account/billing/overview)
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey) and create/get your API key
+2. Add credits to your Google Cloud billing account if needed
 2. Click **"Buy Credits"** and purchase $5-20 worth
 3. This unlocks:
    - Resume skill extraction
@@ -63,8 +64,8 @@ The agent can be extended with other job sources that don't block bots:
 
 Your agent **is working**, it just needs:
 
-1. **Explicit job roles** (until Claude credits added)
-2. **Better resume data** (with Claude credits)
+1. **Explicit job roles** (until Gemini credits added)
+2. **Better resume data** (with Gemini credits)
 3. **Understanding of Indeed's blocking** (expected behavior)
 
 ### What Works Now:
@@ -111,7 +112,7 @@ python main.py auto \
 ## recommended Next Steps
 
 1. **Use explicit `--role` parameter** for now
-2. **Add $5 in Claude credits** to unlock full features
+2. **Add $5 in Gemini credits** to unlock full features
 3. **Test dry-run mode** before auto-applying
 4. **Track applications** in the dashboard
 

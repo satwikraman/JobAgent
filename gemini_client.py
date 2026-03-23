@@ -1,37 +1,38 @@
 """
-Claude API Client - Thin wrapper around the Anthropic SDK
+Gemini API Client - Thin wrapper around the Google Generative AI SDK
 """
 
-import anthropic
+import google.genai as genai
 from typing import Optional
 
 
-class ClaudeClient:
+class GeminiClient:
     """
-    Lightweight wrapper around the Anthropic Python SDK.
+    Lightweight wrapper around the Google Generative AI Python SDK.
     Used by all agent components that need AI reasoning.
     """
 
     def __init__(self, api_key: Optional[str] = None):
-        self.client = anthropic.Anthropic(api_key=api_key)
-        self.model = "claude-sonnet-4-20250514"
+        self.client = genai.Client(api_key=api_key)
+        self.model = "gemini-1.5-flash"
 
     def complete(self, prompt: str, max_tokens: int = 1000, system: str = "") -> str:
         """Simple text completion — returns the assistant's text response."""
-        kwargs = {
-            "model": self.model,
-            "max_tokens": max_tokens,
-            "messages": [{"role": "user", "content": prompt}],
-        }
         if system:
-            kwargs["system"] = system
+            prompt = f"{system}\n\n{prompt}"
 
-        message = self.client.messages.create(**kwargs)
-        return message.content[0].text
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt,
+            config=genai.GenerateContentConfig(
+                max_output_tokens=max_tokens,
+            )
+        )
+        return response.text
 
     def extract_json(self, prompt: str, max_tokens: int = 1000) -> dict:
         """
-        Ask Claude to respond with JSON only.
+        Ask Gemini to respond with JSON only.
         Returns parsed dict, or empty dict on failure.
         """
         import json

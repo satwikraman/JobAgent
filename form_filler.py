@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from models import Application, ApplicationResult
-from claude_client import ClaudeClient
+from gemini_client import GeminiClient
 from config import Config
 
 
@@ -32,7 +32,7 @@ class FormFiller:
     5. Submit the form (or skip if dry_run)
     """
 
-    def __init__(self, config: Config, claude: ClaudeClient):
+    def __init__(self, config: Config, gemini: GeminiClient):
         self.config = config
         self.claude = claude
         self._screenshots_dir = Path("screenshots")
@@ -230,12 +230,12 @@ class FormFiller:
                     continue  # already filled
 
                 if re.search(r"cover.?letter|why.?apply|why.?interest|motivation", label, re.I):
-                    text = self.claude.generate_cover_letter(resume.to_dict(), {"title": job.title, "company": job.company, "description": job.description})
+                    text = self.gemini.generate_cover_letter(resume.to_dict(), {"title": job.title, "company": job.company, "description": job.description})
                     ta.fill(text)
                     filled_any = True
                 elif label.strip():
                     # Generic screening question
-                    answer = self.claude.answer_screening_question(label, resume.to_dict(), {"title": job.title, "company": job.company})
+                    answer = self.gemini.answer_screening_question(label, resume.to_dict(), {"title": job.title, "company": job.company})
                     ta.fill(answer)
                     filled_any = True
 

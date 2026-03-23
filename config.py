@@ -15,7 +15,7 @@ class Config:
     """
 
     DEFAULTS = {
-        "anthropic_api_key": "",
+        "google_api_key": "",
         "headless": False,
         "slow_mo_ms": 50,
         "apply_delay_seconds": 30,

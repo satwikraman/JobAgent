@@ -1,6 +1,6 @@
 # 🤖 AI Job Application Agent
 
-An AI-powered local agent that reads your resume, searches for matching jobs, auto-fills applications, and tracks everything in a dashboard — powered by Claude AI.
+An AI-powered local agent that reads your resume, searches for matching jobs, auto-fills applications, and tracks everything in a dashboard — powered by Gemini AI.
 
 ---
 
@@ -19,12 +19,12 @@ Use this link in job applications, LinkedIn, and portfolio sites.
 
 ## Features
 
-- **Resume parsing** — Extracts structured data from PDF, DOCX, or TXT resumes using Claude
+- **Resume parsing** — Extracts structured data from PDF, DOCX, or TXT resumes using Gemini
 - **Job search** — Scrapes Indeed for matching roles (LinkedIn support optional)
-- **AI match scoring** — Claude scores each job 0–100 based on your resume fit
+- **AI match scoring** — Gemini scores each job 0–100 based on your resume fit
 - **Browser automation** — Playwright fills and submits application forms automatically
-- **Cover letter generation** — Claude writes a tailored cover letter for each application
-- **Screening questions** — Claude answers free-text questions based on your background
+- **Cover letter generation** — Gemini writes a tailored cover letter for each application
+- **Screening questions** — Gemini answers free-text questions based on your background
 - **Application tracking** — SQLite database + Streamlit dashboard
 - **Dry-run mode** — Preview everything without submitting
 
@@ -59,7 +59,7 @@ This creates `config.yaml` with your profile and API key.
 
 Alternatively, copy `config.yaml` and fill in your details manually, or set:
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+export GOOGLE_API_KEY=your_google_api_key_here
 ```
 
 ### 3. Search for jobs
@@ -161,7 +161,7 @@ Edit `config.yaml` to configure:
 
 | Key | Description |
 |-----|-------------|
-| `anthropic_api_key` | Your Claude API key |
+| `google_api_key` | Your Gemini API key |
 | `headless` | `true` = hidden browser, `false` = visible |
 | `slow_mo_ms` | Milliseconds between actions (increase if sites block you) |
 | `apply_delay_seconds` | Wait between applications |
@@ -177,7 +177,7 @@ Your Resume (PDF/DOCX)
         │
         ▼
 ┌──────────────────┐
-│  Resume Parser   │  ← Claude extracts skills, experience, contact info
+│  Resume Parser   │  ← Gemini extracts skills, experience, contact info
 └────────┬─────────┘
          │
          ▼
@@ -187,13 +187,13 @@ Your Resume (PDF/DOCX)
          │
          ▼
 ┌──────────────────┐
-│  AI Match Scorer │  ← Claude scores each job 0-100
+│  AI Match Scorer │  ← Gemini scores each job 0-100
 └────────┬─────────┘
          │ (filtered by --min-score)
          ▼
 ┌──────────────────┐
 │   Form Filler    │  ← Playwright fills forms field-by-field
-│                  │  ← Claude writes cover letters & answers questions
+│                  │  ← Gemini writes cover letters & answers questions
 └────────┬─────────┘
          │
          ▼
@@ -246,7 +246,7 @@ job-agent/
 ├── screenshots/             # Screenshots of each application step
 └── agent/
     ├── agent.py             # Core orchestrator
-    ├── claude_client.py     # Anthropic API wrapper
+    ├── gemini_client.py     # Google Gemini API wrapper
     ├── resume_parser.py     # PDF/DOCX → structured data
     ├── job_searcher.py      # Indeed scraper
     ├── form_filler.py       # Playwright browser automation
